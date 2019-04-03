@@ -2,22 +2,19 @@
  *  Copyright (c) Dolittle. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-
-using System.Collections.Generic;
-using System.IO;
+using System;
 
 namespace Dolittle.Edge.Terasaki
 {
     /// <summary>
-    /// 
+    /// Defines the connector that is responsible for connecting and keeping it with Terasaki
     /// </summary>
-    public interface IParser
+    public interface IConnector
     {
         /// <summary>
-        /// 
+        /// Subscribe to <see cref="Channel"/> values coming
         /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        IEnumerable<Channel> Parse(Stream stream);
+        /// <param name="subscriber">The subscriber method</param>
+        void Subscribe(Action<Channel> subscriber);
     }
 }

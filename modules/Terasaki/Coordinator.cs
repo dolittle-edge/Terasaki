@@ -2,7 +2,6 @@
  *  Copyright (c) Dolittle. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-
 using System;
 using System.IO;
 using System.Threading.Tasks;
@@ -11,32 +10,6 @@ using Dolittle.Scheduling;
 
 namespace Dolittle.Edge.Terasaki
 {
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public interface IConnector
-    {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="subscriber"></param>
-        void Subscribe(Action<Channel> subscriber);
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class Connector : IConnector
-    {
-        /// <inheritdoc/>
-        public void Subscribe(Action<Channel> subscriber)
-        {
-            throw new NotImplementedException();
-        }
-    }b
-
-
     /// <summary>
     /// Represents an implemention of <see cref="ICoordinator"/>
     /// </summary>

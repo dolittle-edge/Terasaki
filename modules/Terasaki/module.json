@@ -2,7 +2,7 @@
     "$schema-version": "0.0.1",
     "description": "",
     "image": {
-        "repository": "dolittle/edge-Terasaki",
+        "repository": "dolittle/edge-terasaki",
         "tag": {
             "version": "1.0.1",
             "platforms": {

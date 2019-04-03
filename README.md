@@ -62,7 +62,7 @@ In your `deployment.json` file, you will need to add the module. For more detail
     "status": "running",
     "restartPolicy": "always",
     "settings": {
-        "image": "dolittle/edge-Terasaki",
+        "image": "dolittle/edge-terasaki",
         "createOptions": {
         "HostConfig": {}
     }

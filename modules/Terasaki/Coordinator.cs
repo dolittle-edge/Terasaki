@@ -44,7 +44,7 @@ namespace Dolittle.Edge.Terasaki
             {
                 Tag = channel.Id.ToString(),
                 System = "Terasaki",
-                Timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                Timestamp = Timestamp.UtcNow,
                 Value = channel.Value
             };
 

@@ -14,24 +14,8 @@ namespace Dolittle.Edge.Terasaki
     class Program
     {
         static void Main(string[] args)
-        {
-            var stream = File.OpenRead("../../sample/terasaki.sample");
-            var parser = new Parser();
-            parser.BeginParse(stream, channel => {
-                var dataPoint = new TagDataPoint<ChannelValue>
-                {
-                    System = "Terasaki",
-                    Tag = channel.Id.ToString(),
-                    Value = channel.Value,
-                    Timestamp = Timestamp.UtcNow
-                };
-
-                var json = JsonConvert.SerializeObject(dataPoint, Formatting.None);
-                Console.WriteLine(json);
-            });
-            stream.Close();
-            
-            //Bootloader.Configure(_ => {}).Start().Wait();
+        {           
+            Bootloader.Configure(_ => {}).Start().Wait();
         }
     }
 }

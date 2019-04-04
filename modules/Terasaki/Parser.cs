@@ -39,7 +39,7 @@ namespace Dolittle.Edge.Terasaki
 
                 for(;;)
                 {
-                    reader.SkipTilStartOfBlock();
+                    reader.SkipTillStartOfBlock();
 
                     var blockNumber = reader.ReadAsciiInt(3);
                     var numberOfChannels = reader.ReadAsciiInt(3);

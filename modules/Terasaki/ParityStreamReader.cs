@@ -32,7 +32,7 @@ namespace Dolittle.Edge.Terasaki
         /// <summary>
         /// Skip bytes till we get the start og block byte
         /// </summary>
-        public void SkipTilStartOfBlock()
+        public void SkipTillStartOfBlock()
         {
             while (ReadByte() != 0x02);
             Parity = 0;

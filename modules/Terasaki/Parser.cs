@@ -6,7 +6,6 @@ using System;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text;
 using Dolittle.Logging;
 
 namespace Dolittle.Edge.Terasaki
@@ -32,17 +31,15 @@ namespace Dolittle.Edge.Terasaki
         {
             try
             {
-                var reader = new ParityStream(stream);
+                var reader = new ParityStreamReader(stream);
 
                 // Keep track of the blocks
                 var lastSeenBlock = -1;
                 var channelIdOffset = 0;
 
-                while (true)
+                for(;;)
                 {
-                    // Read until we get start-of-text
-                    while (reader.ReadByte() != 0x02);
-                    reader.Parity = 0;
+                    reader.SkipTilStartOfBlock();
 
                     var blockNumber = reader.ReadAsciiInt(3);
                     var numberOfChannels = reader.ReadAsciiInt(3);
@@ -129,65 +126,5 @@ namespace Dolittle.Edge.Terasaki
                 _logger.Error(ex, "Error while parsing");
             }
         }
-
-        class ParityStream
-        {
-            readonly Stream _stream;
-
-            public ParityStream(Stream stream)
-            {
-                _stream = stream;
-            }
-
-            public byte Parity { get; set; }
-
-            public byte ReadByte()
-            {
-                var data = _stream.ReadByte();
-                if (data < 0) throw new EndOfStreamException();
-                Parity ^= (byte)data;
-                return (byte)data;
-            }
-
-            public byte[] ReadBytes(int size)
-            {
-                var data = new byte[size];
-                for (var i = 0; i < size; ++i)
-                {
-                    data[i] = ReadByte();
-                }
-                return data;
-            }
-
-            public int ReadAsciiInt(int size)
-            {
-                var data = ReadBytes(size);
-                return int.Parse(Encoding.ASCII.GetString(data));
-            }
-
-            public byte ReadAsciiHexByte()
-            {
-                var data = new [] { ReadByte(), ReadByte() };
-                return Convert.ToByte(Encoding.ASCII.GetString(data), 16);
-            }
-
-            public string ReadUntil(char separator)
-            {
-                var read = 0;
-                var data = new byte[10];
-                var current = ReadByte();
-                while (current != separator)
-                {
-                    if (read == data.Length)
-                    {
-                        Array.Resize(ref data, data.Length*2);
-                    }
-                    data[read] = current;
-                    read++;
-                    current = ReadByte();
-                }
-                return Encoding.ASCII.GetString(data, 0, read);
-            }
-        }
-    }
+   }   
 }

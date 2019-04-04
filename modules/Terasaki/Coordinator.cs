@@ -44,7 +44,7 @@ namespace Dolittle.Edge.Terasaki
             var dataPoint = new TagDataPoint<ChannelValue>
             {
                 Tag = channel.Id.ToString(),
-                System = "Terasaki",
+                ControlSystem = "Terasaki",
                 Timestamp = Timestamp.UtcNow,
                 Value = channel.Value
             };

@@ -51,7 +51,7 @@ namespace Dolittle.Edge.Terasaki
                         lastSeenBlock = 0;
                         channelIdOffset = 0;
                     }
-                    else if (blockNumber == lastSeenBlock+1)
+                    else if (blockNumber == lastSeenBlock + 1)
                     {
                         lastSeenBlock = blockNumber;
                     }
@@ -63,36 +63,7 @@ namespace Dolittle.Edge.Terasaki
 
                     _logger.Information($"Handling block '{blockNumber}' with '{numberOfChannels}' channels");
 
-                    var channels = new Channel[numberOfChannels];
-                    for (var i = 0; i < numberOfChannels; ++i)
-                    {
-                        var channelData = reader.ReadUntil(',');
-
-                        var channelState = ' ';
-                        var channelValue = 0.0;
-
-                        if (channelData[0] != ' ' && (channelData[0] < '0' || channelData[0] > '9'))
-                        {
-                            // There is something other than a number in the first character
-                            channelState = channelData[0];
-                            double.TryParse(channelData.AsSpan().Slice(1), out channelValue);
-                        }
-                        else
-                        {
-                            // Just a number
-                            double.TryParse(channelData, out channelValue);
-                        }
-
-                        channels[i] = new Channel
-                        {
-                            Id = i+channelIdOffset,
-                            Value = new ChannelValue {
-                                State = channelState,
-                                Value = channelValue,
-                                ParityError = false,
-                            },
-                        };
-                    }
+                    var channels = GetChannels(reader, channelIdOffset, numberOfChannels);
 
                     var calculatedParity = reader.Parity;
 
@@ -126,5 +97,42 @@ namespace Dolittle.Edge.Terasaki
                 _logger.Error(ex, "Error while parsing");
             }
         }
-   }   
+
+        Channel[] GetChannels(ParityStreamReader reader, int channelIdOffset, int numberOfChannels)
+        {
+            var channels = new Channel[numberOfChannels];
+            for (var i = 0; i < numberOfChannels; ++i)
+            {
+                var channelData = reader.ReadUntil(',');
+
+                var channelState = ' ';
+                var channelValue = 0.0;
+
+                if (channelData[0] != ' ' && (channelData[0] < '0' || channelData[0] > '9'))
+                {
+                    // There is something other than a number in the first character
+                    channelState = channelData[0];
+                    double.TryParse(channelData.AsSpan().Slice(1), out channelValue);
+                }
+                else
+                {
+                    // Just a number
+                    double.TryParse(channelData, out channelValue);
+                }
+
+                channels[i] = new Channel
+                {
+                    Id = i + channelIdOffset,
+                    Value = new ChannelValue
+                    {
+                        State = channelState,
+                        Value = channelValue,
+                        ParityError = false,
+                    },
+                };
+            }
+
+            return channels;
+        }
+    }   
 }

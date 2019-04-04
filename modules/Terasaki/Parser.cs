@@ -32,73 +32,161 @@ namespace Dolittle.Edge.Terasaki
         {
             try
             {
+                var reader = new ParityStream(stream);
+
+                // Keep track of the blocks
+                var lastSeenBlock = -1;
                 var channelIdOffset = 0;
 
-                var startMarker = new byte[1];
-                while (stream.Read(startMarker, 0, startMarker.Length) == startMarker.Length)
+                while (true)
                 {
-                    if (startMarker[0] == 0x2)
+                    // Read until we get start-of-text
+                    while (reader.ReadByte() != 0x02);
+                    reader.Parity = 0;
+
+                    var blockNumber = reader.ReadAsciiInt(3);
+                    var numberOfChannels = reader.ReadAsciiInt(3);
+
+                    var outOfOrderBlock = false;
+
+                    if (blockNumber == 0)
                     {
-                        var blockTypeBytes = new byte[3];
-                        if (stream.Read(blockTypeBytes, 0, blockTypeBytes.Length) != blockTypeBytes.Length) return;
+                        lastSeenBlock = 0;
+                        channelIdOffset = 0;
+                    }
+                    else if (blockNumber == lastSeenBlock+1)
+                    {
+                        lastSeenBlock = blockNumber;
+                    }
+                    else
+                    {
+                        outOfOrderBlock = true;
+                        _logger.Warning($"An out of order block '{blockNumber}' was detected, data will have to be thrown away.");
+                    }
 
-                        var blockType = int.Parse(Encoding.ASCII.GetString(blockTypeBytes));
-                        
+                    _logger.Information($"Handling block '{blockNumber}' with '{numberOfChannels}' channels");
 
-                        if (blockType > 0) channelIdOffset = 0;
+                    var channels = new Channel[numberOfChannels];
+                    for (var i = 0; i < numberOfChannels; ++i)
+                    {
+                        var channelData = reader.ReadUntil(',');
 
-                        var numberOfChannelsBytes = new byte[3];
-                        if (stream.Read(numberOfChannelsBytes, 0, numberOfChannelsBytes.Length) != numberOfChannelsBytes.Length) return;
+                        var channelState = ' ';
+                        var channelValue = 0.0;
 
-                        var numberOfChannels = int.Parse(Encoding.ASCII.GetString(numberOfChannelsBytes));
-
-                        _logger.Information($"Handling blocktype '{blockType}' with '{numberOfChannels}' channels");
-
-                        var currentValueBuffer = new byte[20]; // Magic number, averge is about 9 bytes - including state and comma
-                        var currentValueBufferOffset = 0;
-                        var channel = 0;
-
-                        var singleByte = new byte[1];
-                        while (stream.Read(singleByte, 0, singleByte.Length) == singleByte.Length)
+                        if (channelData[0] != ' ' && (channelData[0] < '0' || channelData[0] > '9'))
                         {
-                            if (singleByte[0] == 0x2a) // checksum
-                            {
-                                break;
-                            }
-
-                            if (singleByte[0] == 0x2c) // comma
-                            {
-                                var channelId = channelIdOffset + channel;
-                                var state = (char) currentValueBuffer[0];
-                                var valueBytes = new byte[currentValueBufferOffset - 1];
-
-                                Buffer.BlockCopy(currentValueBuffer, 1, valueBytes, 0, valueBytes.Length);
-
-                                var valueString = Encoding.ASCII.GetString(valueBytes);
-                                double value = 0;
-                                double.TryParse(valueString, NumberStyles.Any, CultureInfo.InvariantCulture, out value);
-
-                                callback(new Channel
-                                {
-                                    Id = channelId,
-                                        Value = new ChannelValue { Value = value, State = state }
-                                });
-                                currentValueBufferOffset = 0;
-                                channel++;
-                            }
-                            else
-                            {
-                                currentValueBuffer[currentValueBufferOffset++] = singleByte[0];
-                            }
+                            // There is something other than a number in the first character
+                            channelState = channelData[0];
+                            double.TryParse(channelData.AsSpan().Slice(1), out channelValue);
+                        }
+                        else
+                        {
+                            // Just a number
+                            double.TryParse(channelData, out channelValue);
                         }
 
-                        channelIdOffset += numberOfChannels;
+                        channels[i] = new Channel
+                        {
+                            Id = i+channelIdOffset,
+                            Value = new ChannelValue {
+                                State = channelState,
+                                Value = channelValue,
+                                ParityError = false,
+                            },
+                        };
                     }
+
+                    var calculatedParity = reader.Parity;
+
+                    if (reader.ReadByte() != '*') throw new InvalidDataException("Expected '*' after all channel data");
+
+                    var transmittedParity = reader.ReadAsciiHexByte();
+
+                    if (calculatedParity != transmittedParity)
+                    {
+                        _logger.Warning($"A parity error was detected while reading block '{blockNumber}'.");
+                    }
+
+                    reader.ReadByte(); // There should be an end-of-text here, but there's no need to check
+
+                    // Transmit the data if the block was in order
+                    if (!outOfOrderBlock)
+                    {
+                        for (var i = 0; i < numberOfChannels; ++i)
+                        {
+                            channels[i].Value.ParityError = calculatedParity != transmittedParity;
+                            callback(channels[i]);
+                        }
+                    }
+
+                    // Keep track of channels seen
+                    channelIdOffset += numberOfChannels;
                 }
             }
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error while parsing");
+            }
+        }
+
+        class ParityStream
+        {
+            readonly Stream _stream;
+
+            public ParityStream(Stream stream)
+            {
+                _stream = stream;
+            }
+
+            public byte Parity { get; set; }
+
+            public byte ReadByte()
+            {
+                var data = _stream.ReadByte();
+                if (data < 0) throw new EndOfStreamException();
+                Parity ^= (byte)data;
+                return (byte)data;
+            }
+
+            public byte[] ReadBytes(int size)
+            {
+                var data = new byte[size];
+                for (var i = 0; i < size; ++i)
+                {
+                    data[i] = ReadByte();
+                }
+                return data;
+            }
+
+            public int ReadAsciiInt(int size)
+            {
+                var data = ReadBytes(size);
+                return int.Parse(Encoding.ASCII.GetString(data));
+            }
+
+            public byte ReadAsciiHexByte()
+            {
+                var data = new [] { ReadByte(), ReadByte() };
+                return Convert.ToByte(Encoding.ASCII.GetString(data), 16);
+            }
+
+            public string ReadUntil(char separator)
+            {
+                var read = 0;
+                var data = new byte[10];
+                var current = ReadByte();
+                while (current != separator)
+                {
+                    if (read == data.Length)
+                    {
+                        Array.Resize(ref data, data.Length*2);
+                    }
+                    data[read] = current;
+                    read++;
+                    current = ReadByte();
+                }
+                return Encoding.ASCII.GetString(data, 0, read);
             }
         }
     }

@@ -19,5 +19,10 @@ namespace Dolittle.Edge.Terasaki
         /// Gets or sets the state from the sensor
         /// </summary>
         public char State { get; set; }
+
+        /// <summary>
+        /// Indicates whether there was a parity error during transmit of this channel
+        /// </summary>
+        public bool ParityError { get; set; }
     }
 }

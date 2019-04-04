@@ -3,7 +3,14 @@
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.IO;
+using System.Net.Sockets;
+using System.Threading.Tasks;
+using Dolittle.Edge.Modules;
+using Dolittle.Logging;
+using Newtonsoft.Json;
 
 namespace Dolittle.Edge.Terasaki
 {
@@ -12,21 +19,57 @@ namespace Dolittle.Edge.Terasaki
     /// </summary>
     public class Connector : IConnector
     {
-        List<Action<Channel>>   _subscribers = new List<Action<Channel>>();
+        readonly ILogger _logger;
+        readonly IParser _parser;
+        readonly ConcurrentBag<Action<Channel>> _subscribers;
 
         /// <summary>
         /// Initializes a new instance of <see cref="Connector"/>
         /// </summary>
+        /// <param name="logger"><see cref="ILogger"/> for logging</param>
         /// <param name="parser"><see cref="IParser"/> for dealing with the actual parsing</param>
-        public Connector(IParser parser)
+        public Connector(ILogger logger, IParser parser)
         {
-            // TODO: Socket magic
-
-            parser.BeginParse(null, channel => {
-                _subscribers.ForEach(subscriber => subscriber(channel));
-            });
+            _logger = logger;
+            _parser = parser; 
+            _subscribers = new ConcurrentBag<Action<Channel>>();
         }
 
+        /// <inheritdoc/>
+        public void Start()
+        {
+            Task.Run(() => {
+                while (true)
+                {
+                    try
+                    {
+                        var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+                        socket.Connect("localhost", 2101);
+
+                        using (var stream = new NetworkStream(socket, FileAccess.Read, true))
+                        {
+                            _parser.BeginParse(stream, channel => {
+                                var dataPoint = new TagDataPoint<ChannelValue>
+                                {
+                                    System = "Terasaki",
+                                    Tag = channel.Id.ToString(),
+                                    Value = channel.Value,
+                                    Timestamp = Timestamp.UtcNow
+                                };
+                                var json = JsonConvert.SerializeObject(dataPoint, Formatting.None);
+                                Console.WriteLine(json);
+                                //_subscribers.ForEach(subscriber => subscriber(channel));
+                            });
+                        }
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, "Error while connecting to TCP stream");
+                    }
+                }
+            });
+        }
 
         /// <inheritdoc/>
         public void Subscribe(Action<Channel> subscriber)

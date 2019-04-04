@@ -52,7 +52,6 @@ namespace Dolittle.Edge.Terasaki
                 Console.WriteLine(json);
             });
             stream.Close();
-
         }
     }
 }

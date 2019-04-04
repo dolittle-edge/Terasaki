@@ -12,6 +12,11 @@ namespace Dolittle.Edge.Terasaki
     public interface IConnector
     {
         /// <summary>
+        /// Starts the connector to begin streaming data
+        /// </summary>
+        void Start();
+
+        /// <summary>
         /// Subscribe to <see cref="Channel"/> values coming
         /// </summary>
         /// <param name="subscriber">The subscriber method</param>

@@ -35,6 +35,7 @@ namespace Dolittle.Edge.Terasaki
         public void Initialize()
         {
             _connector.Subscribe(ChannelReceived);
+            _connector.Start();
         }
 
 

@@ -4,13 +4,14 @@
  *--------------------------------------------------------------------------------------------*/
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using System.Threading.Tasks;
+using Dolittle.Collections;
 using Dolittle.Edge.Modules;
 using Dolittle.Logging;
-using Newtonsoft.Json;
 
 namespace Dolittle.Edge.Terasaki
 {
@@ -31,24 +32,26 @@ namespace Dolittle.Edge.Terasaki
         public Connector(ILogger logger, IParser parser)
         {
             _logger = logger;
-            _parser = parser; 
+            _parser = parser;
             _subscribers = new ConcurrentBag<Action<Channel>>();
         }
 
         /// <inheritdoc/>
         public void Start()
         {
-            Task.Run(() => {
+            Task.Run(() =>
+            {
                 while (true)
                 {
                     try
                     {
                         var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-                        socket.Connect("localhost", 2101);
+                        socket.Connect(IPAddress.Parse("10.48.52.181"), 2101);
 
                         using (var stream = new NetworkStream(socket, FileAccess.Read, true))
                         {
-                            _parser.BeginParse(stream, channel => {
+                            _parser.BeginParse(stream, channel =>
+                            {
                                 var dataPoint = new TagDataPoint<ChannelValue>
                                 {
                                     System = "Terasaki",
@@ -56,17 +59,17 @@ namespace Dolittle.Edge.Terasaki
                                     Value = channel.Value,
                                     Timestamp = Timestamp.UtcNow
                                 };
-                                var json = JsonConvert.SerializeObject(dataPoint, Formatting.None);
-                                Console.WriteLine(json);
-                                //_subscribers.ForEach(subscriber => subscriber(channel));
+                                _subscribers.ForEach(subscriber => subscriber(channel));
                             });
                         }
-                        
+
                     }
                     catch (Exception ex)
                     {
                         _logger.Error(ex, "Error while connecting to TCP stream");
                     }
+                    
+                    Thread.Sleep(10000);
                 }
             });
         }

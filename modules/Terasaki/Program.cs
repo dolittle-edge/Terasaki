@@ -14,7 +14,7 @@ namespace Dolittle.Edge.Terasaki
     class Program
     {
         static void Main(string[] args)
-        {           
+        {
             Bootloader.Configure(_ => {}).Start().Wait();
         }
     }

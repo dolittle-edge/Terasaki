@@ -35,8 +35,9 @@ namespace Dolittle.Edge.Terasaki
         /// <inheritdoc/>
         public void Perform()
         {
-            //_coordinator.Initialize();
-
+            _coordinator.Initialize();
+            
+            /*
             // NOTE: This is test code that **MUST** be removed when we've verified it works (PS: clean up using statements :))
             var stream = File.OpenRead("../../sample/terasaki.sample");
             _parser.BeginParse(stream, channel => {
@@ -52,6 +53,7 @@ namespace Dolittle.Edge.Terasaki
                 Console.WriteLine(json);
             });
             stream.Close();
+            */
         }
     }
 }

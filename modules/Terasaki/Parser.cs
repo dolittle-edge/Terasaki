@@ -15,6 +15,8 @@ namespace Dolittle.Edge.Terasaki
     /// </summary>
     public class Parser : IParser
     {
+        const byte StartBlock = 0x2;
+
         readonly ILogger _logger;
 
         /// <summary>
@@ -39,7 +41,7 @@ namespace Dolittle.Edge.Terasaki
 
                 for(;;)
                 {
-                    reader.SkipTillStartOfBlock();
+                    reader.SkipTill(StartBlock);
 
                     var blockNumber = reader.ReadAsciiInt(3);
                     var numberOfChannels = reader.ReadAsciiInt(3);

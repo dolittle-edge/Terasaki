@@ -30,11 +30,11 @@ namespace Dolittle.Edge.Terasaki
         public byte Parity { get; private set; }
 
         /// <summary>
-        /// Skip bytes till we get the start og block byte
+        /// Skip bytes till we get to a specific byte
         /// </summary>
-        public void SkipTillStartOfBlock()
+        public void SkipTill(byte @byte)
         {
-            while (ReadByte() != 0x02);
+            while (ReadByte() != @byte);
             Parity = 0;
         }
 

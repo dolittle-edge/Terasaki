@@ -15,6 +15,11 @@ namespace Dolittle.Edge.Terasaki
     /// </summary>
     public class Coordinator : ICoordinator
     {
+        /// <summary>
+        /// The name of the control system
+        /// </summary>
+        public const string ControlSystemName = "Terasaki";
+
         readonly ICommunicationClient _client;
         readonly IConnector _connector;
 
@@ -44,7 +49,7 @@ namespace Dolittle.Edge.Terasaki
             var dataPoint = new TagDataPoint<ChannelValue>
             {
                 Tag = channel.Id.ToString(),
-                ControlSystem = "Terasaki",
+                ControlSystem = ControlSystemName,
                 Timestamp = Timestamp.UtcNow,
                 Value = channel.Value
             };

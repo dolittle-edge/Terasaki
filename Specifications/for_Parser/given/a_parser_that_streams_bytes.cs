@@ -2,6 +2,7 @@
  *  Copyright (c) Dolittle. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Dolittle.Logging;
@@ -18,6 +19,8 @@ namespace Dolittle.Edge.Terasaki.for_Parser.given
         protected static List<Channel> channels;
 
         protected static byte[] bytes;
+
+        protected static Exception exception;
         
         Establish context = () => parser = new Parser(Mock.Of<ILogger>());
 
@@ -25,9 +28,7 @@ namespace Dolittle.Edge.Terasaki.for_Parser.given
         {
             channels = new List<Channel>();
             stream = new MemoryStream(bytes);
-            parser.BeginParse(stream, channels.Add);
+            parser.BeginParse(stream, channels.Add, ex => exception = ex);
         };
-
-
     }
 }

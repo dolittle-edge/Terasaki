@@ -29,7 +29,7 @@ namespace Dolittle.Edge.Terasaki
         }
 
         /// <inheritdoc/>
-        public void BeginParse(Stream stream, Action<Channel> callback)
+        public void BeginParse(Stream stream, Action<Channel> callback, Action<Exception> exceptionOccurred = null)
         {
             try
             {
@@ -65,8 +65,7 @@ namespace Dolittle.Edge.Terasaki
 
                     _logger.Information($"Handling block '{blockNumber}' with '{numberOfChannels}' channels");
 
-                    var channels = GetChannels(reader, channelIdOffset, numberOfChannels);
-
+                    var channels = ReadChannels(reader, channelIdOffset, numberOfChannels);
                     var calculatedParity = reader.Parity;
 
                     if (reader.ReadByte() != '*') throw new InvalidDataException("Expected '*' after all channel data");
@@ -86,7 +85,7 @@ namespace Dolittle.Edge.Terasaki
                         for (var i = 0; i < numberOfChannels; ++i)
                         {
                             channels[i].Value.ParityError = calculatedParity != transmittedParity;
-                            callback(channels[i]);
+                            callback(channels[i]); 
                         }
                     }
 
@@ -97,10 +96,11 @@ namespace Dolittle.Edge.Terasaki
             catch (Exception ex)
             {
                 _logger.Error(ex, "Error while parsing");
+                if( exceptionOccurred != null ) exceptionOccurred(ex);
             }
         }
 
-        Channel[] GetChannels(ParityStreamReader reader, int channelIdOffset, int numberOfChannels)
+        Channel[] ReadChannels(ParityStreamReader reader, int channelIdOffset, int numberOfChannels)
         {
             var channels = new Channel[numberOfChannels];
             for (var i = 0; i < numberOfChannels; ++i)

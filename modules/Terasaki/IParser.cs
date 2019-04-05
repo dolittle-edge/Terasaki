@@ -18,6 +18,7 @@ namespace Dolittle.Edge.Terasaki
         /// </summary>
         /// <param name="stream"><see cref="Stream"/> to continuously get from</param>
         /// <param name="callback"><see cref="Action{Channel}">Callback</see> for each <see cref="Channel"/> parsed</param>
-        void BeginParse(Stream stream, Action<Channel> callback);
+        /// <param name="exceptionOccurred">Optional callback for getting any exceptions that occurs during streaming</param>
+        void BeginParse(Stream stream, Action<Channel> callback, Action<Exception> exceptionOccurred = null);
     }
 }

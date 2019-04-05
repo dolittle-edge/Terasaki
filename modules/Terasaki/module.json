@@ -4,7 +4,7 @@
     "image": {
         "repository": "dolittle/edge-terasaki",
         "tag": {
-            "version": "1.0.1",
+            "version": "1.0.4",
             "platforms": {
                 "amd64": "./Dockerfile"
             }

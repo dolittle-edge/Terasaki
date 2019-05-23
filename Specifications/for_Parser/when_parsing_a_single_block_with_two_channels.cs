@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using Machine.Specifications;
 
-namespace Dolittle.Edge.Terasaki.for_Parser
+namespace Dolittle.TimeSeries.Terasaki.for_Parser
 {
     public class when_parsing_a_single_block_with_two_channels_with_different_states : given.a_parser_that_streams_bytes
     {

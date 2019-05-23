@@ -6,7 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Dolittle.Edge.Terasaki
+namespace Dolittle.TimeSeries.Terasaki
 {
     /// <summary>
     /// Defines the parser that is capable of parsing the data coming from Terasaki

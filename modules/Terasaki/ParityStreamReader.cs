@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using System.Text;
 
-namespace Dolittle.Edge.Terasaki
+namespace Dolittle.TimeSeries.Terasaki
 {
     /// <summary>
     /// Represents a <see cref="Stream"/> wrapper for dealing with the parity and Terasaki

@@ -5,7 +5,7 @@
 using System.IO;
 using Machine.Specifications;
 
-namespace Dolittle.Edge.Terasaki.for_ParityStreamReader
+namespace Dolittle.TimeSeries.Terasaki.for_ParityStreamReader
 {
     public class when_reading_a_string_until_a_specific_separator
     {

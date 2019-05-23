@@ -8,7 +8,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using Dolittle.Logging;
 
-namespace Dolittle.Edge.Terasaki
+namespace Dolittle.TimeSeries.Terasaki
 {
     /// <summary>
     /// Represents an implementation of <see cref="IParser"/>

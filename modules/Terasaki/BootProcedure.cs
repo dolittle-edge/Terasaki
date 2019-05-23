@@ -5,10 +5,10 @@
 using System;
 using System.IO;
 using Dolittle.Booting;
-using Dolittle.Edge.Modules;
+using Dolittle.TimeSeries.Modules;
 using Newtonsoft.Json;
 
-namespace Dolittle.Edge.Terasaki
+namespace Dolittle.TimeSeries.Terasaki
 {
     /// <summary>
     /// Represents the <see cref="ICanPerformBootProcedure">boot procedure</see> that initializes the module

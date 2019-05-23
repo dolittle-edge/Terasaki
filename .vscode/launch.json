@@ -34,7 +34,7 @@
         "name": "IdentityMapper Local Debug (.NET Core)",
         "type": "coreclr",
         "request": "launch",
-        "program": "${workspaceRoot}/modules/Terasaki/bin/Debug/netcoreapp2.1/Dolittle.Edge.Terasaki.dll",
+        "program": "${workspaceRoot}/modules/Terasaki/bin/Debug/netcoreapp2.1/Dolittle.TimeSeries.Terasaki.dll",
         "args": [],
         "cwd": "${workspaceRoot}/modules/Terasaki",
         "internalConsoleOptions": "openOnSessionStart",

@@ -5,10 +5,10 @@
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using Dolittle.Edge.Modules;
+using Dolittle.TimeSeries.Modules;
 using Dolittle.Scheduling;
 
-namespace Dolittle.Edge.Terasaki
+namespace Dolittle.TimeSeries.Terasaki
 {
     /// <summary>
     /// Represents an implemention of <see cref="ICoordinator"/>
@@ -46,12 +46,12 @@ namespace Dolittle.Edge.Terasaki
 
         void ChannelReceived(Channel channel)
         {          
-            var dataPoint = new TagDataPoint<ChannelValue>
+            var dataPoint = new TagDataPoint<double>
             {
                 Tag = channel.Id.ToString(),
                 ControlSystem = ControlSystemName,
                 Timestamp = Timestamp.UtcNow,
-                Value = channel.Value
+                Value = channel.Value.Value
             };
 
             _client.SendAsJson("output", dataPoint);

@@ -4,7 +4,7 @@
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp2.1</TargetFramework>
-        <AssemblyName>Dolittle.Edge.Terasaki</AssemblyName>
+        <AssemblyName>Dolittle.TimeSeries.Terasaki</AssemblyName>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
@@ -13,6 +13,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Dolittle.Edge.Modules" Version="2.*" />
+        <PackageReference Include="Dolittle.TimeSeries.Modules" Version="2.*" />
     </ItemGroup>
 </Project>

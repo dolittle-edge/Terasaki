@@ -6,9 +6,9 @@ using Machine.Specifications;
 using Moq;
 using It = Machine.Specifications.It;
 using System;
-using Dolittle.Edge.Modules;
+using Dolittle.TimeSeries.Modules;
 
-namespace Dolittle.Edge.Terasaki.for_Coordinator
+namespace Dolittle.TimeSeries.Terasaki.for_Coordinator
 {
     public class when_channel_is_received
     {

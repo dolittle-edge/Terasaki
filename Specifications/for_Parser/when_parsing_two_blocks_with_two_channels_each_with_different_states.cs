@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 using Machine.Specifications;
 
-namespace Dolittle.Edge.Terasaki.for_Parser
+namespace Dolittle.TimeSeries.Terasaki.for_Parser
 {
     public class when_parsing_two_blocks_with_two_channels_each_with_different_states : given.a_parser_that_streams_bytes
     {

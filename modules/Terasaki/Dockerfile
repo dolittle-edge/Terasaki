@@ -20,4 +20,4 @@ COPY --from=build-env /app/modules/Terasaki/out ./
 #RUN useradd -ms /bin/bash moduleuser
 #USER moduleuser
 
-ENTRYPOINT ["dotnet", "Dolittle.Edge.Terasaki.dll"]
+ENTRYPOINT ["dotnet", "Dolittle.TimeSeries.Terasaki.dll"]

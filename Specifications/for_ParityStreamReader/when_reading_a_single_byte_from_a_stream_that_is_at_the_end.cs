@@ -6,7 +6,7 @@ using System;
 using System.IO;
 using Machine.Specifications;
 
-namespace Dolittle.Edge.Terasaki.for_ParityStreamReader
+namespace Dolittle.TimeSeries.Terasaki.for_ParityStreamReader
 {
     public class when_reading_a_single_byte_from_a_stream_that_is_at_the_end
     {

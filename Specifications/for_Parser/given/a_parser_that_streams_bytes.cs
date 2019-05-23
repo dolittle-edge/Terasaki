@@ -9,7 +9,7 @@ using Dolittle.Logging;
 using Machine.Specifications;
 using Moq;
 
-namespace Dolittle.Edge.Terasaki.for_Parser.given
+namespace Dolittle.TimeSeries.Terasaki.for_Parser.given
 {
     public abstract class a_parser_that_streams_bytes
     {

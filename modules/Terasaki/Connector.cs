@@ -10,10 +10,10 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Dolittle.Collections;
-using Dolittle.Edge.Modules;
+using Dolittle.TimeSeries.Modules;
 using Dolittle.Logging;
 
-namespace Dolittle.Edge.Terasaki
+namespace Dolittle.TimeSeries.Terasaki
 {
     /// <summary>
     /// Represents an implementation for <see cref="IConnector"/>

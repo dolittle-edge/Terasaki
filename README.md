@@ -56,7 +56,7 @@ In your `deployment.json` file, you will need to add the module. For more detail
 
 ```json
 "modules": {
-    "Dolittle.Edge.Terasaki": {
+    "Dolittle.TimeSeries.Terasaki": {
     "version": "1.0",
     "type": "docker",
     "status": "running",

@@ -1,5 +1,7 @@
 # Terasaki
 
+[![Build Status](https://dolittle.visualstudio.com/Dolittle%20open-source%20repositories/_apis/build/status/dolittle-timeseries.Terasaki?branchName=master)](https://dolittle.visualstudio.com/Dolittle%20open-source%20repositories/_build/latest?definitionId=11&branchName=master)
+
 ## Cloning
 
 This repository has sub modules, clone it with:

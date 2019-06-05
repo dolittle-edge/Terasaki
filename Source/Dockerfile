@@ -4,18 +4,18 @@ WORKDIR /app
 VOLUME [ "/app/data" ]
 
 COPY Build/MSBuild/* ./Build/MSBuild/
-COPY modules/Terasaki/*.csproj ./modules/Terasaki/
+COPY Source/*.csproj ./Source/
 
-WORKDIR /app/modules/Terasaki
+WORKDIR /app/Source
 
 RUN dotnet restore
 
-COPY modules/Terasaki/ ./
+COPY Source/ ./
 RUN dotnet publish -c Release -o out
 
 FROM microsoft/dotnet:2.1-runtime-stretch-slim
 WORKDIR /app
-COPY --from=build-env /app/modules/Terasaki/out ./
+COPY --from=build-env /app/Source/out ./
 
 #RUN useradd -ms /bin/bash moduleuser
 #USER moduleuser

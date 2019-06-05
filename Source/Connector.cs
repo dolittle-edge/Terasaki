@@ -23,17 +23,24 @@ namespace Dolittle.TimeSeries.Terasaki
         readonly ILogger _logger;
         readonly IParser _parser;
         readonly ConcurrentBag<Action<Channel>> _subscribers;
+        private readonly ConnectorConfiguration _configuration;
 
         /// <summary>
         /// Initializes a new instance of <see cref="Connector"/>
         /// </summary>
+        /// <param name="configuration"><see cref="ConnectorConfiguration"/> holding all configuration</param>
         /// <param name="logger"><see cref="ILogger"/> for logging</param>
         /// <param name="parser"><see cref="IParser"/> for dealing with the actual parsing</param>
-        public Connector(ILogger logger, IParser parser)
+        public Connector(
+            ConnectorConfiguration configuration,
+            ILogger logger,
+            IParser parser)
         {
             _logger = logger;
             _parser = parser;
             _subscribers = new ConcurrentBag<Action<Channel>>();
+            _configuration = configuration;
+            _logger.Information($"Will connect to '{configuration.Ip}:{configuration.Port}'");
         }
 
         /// <inheritdoc/>
@@ -46,7 +53,7 @@ namespace Dolittle.TimeSeries.Terasaki
                     try
                     {
                         var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
-                        socket.Connect(IPAddress.Parse("10.48.52.181"), 2101);
+                        socket.Connect(IPAddress.Parse(_configuration.Ip), _configuration.Port);
 
                         using (var stream = new NetworkStream(socket, FileAccess.Read, true))
                         {

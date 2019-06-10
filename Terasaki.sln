@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26124.0
 MinimumVisualStudioVersion = 15.0.26124.0
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "modules", "modules", "{7776563C-1EC9-4B1C-9457-5604930F4BD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terasaki", "modules\Terasaki\Terasaki.csproj", "{FBF5908D-AB5F-4748-B092-74E3F48FDF4C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terasaki", "Source\Terasaki.csproj", "{FBF5908D-AB5F-4748-B092-74E3F48FDF4C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Terasaki", "Specifications\Terasaki.csproj", "{E11F72DB-B3E6-4AF9-9089-D67B2322B7A9}"
 EndProject

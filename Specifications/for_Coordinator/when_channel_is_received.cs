@@ -18,7 +18,7 @@ namespace Dolittle.TimeSeries.Terasaki.for_Coordinator
         static Action<Channel> callback;
 
         static Channel channel;
-        static TagDataPoint<ChannelValue> data_point;
+        static TagDataPoint<double> data_point;
 
         Establish context = () =>
         {
@@ -30,7 +30,7 @@ namespace Dolittle.TimeSeries.Terasaki.for_Coordinator
 
             communication_client
                 .Setup(_ => _.SendAsJson(Moq.It.IsAny<Output>(), Moq.It.IsAny<object>()))
-                .Callback((Output output, object dataPoint) => data_point = (TagDataPoint<ChannelValue>)dataPoint);
+                .Callback((Output output, object dataPoint) => data_point = (TagDataPoint<double>)dataPoint);
 
             channel = new Channel
             {
@@ -52,8 +52,6 @@ namespace Dolittle.TimeSeries.Terasaki.for_Coordinator
         It should_send_a_data_point_with_expected_tag = () => data_point.Tag.Value.ShouldEqual(channel.Id.ToString());
         It should_send_a_data_point_with_expected_control_system = () => data_point.ControlSystem.Value.ShouldEqual(Coordinator.ControlSystemName);
         It should_send_a_data_point_with_a_timestamp = () => data_point.Timestamp.ShouldBeGreaterThan(0);
-        It should_send_a_data_point_with_expected_value = () => data_point.Value.Value.ShouldEqual(channel.Value.Value);
-        It should_send_a_data_point_with_expected_state = () => data_point.Value.State.ShouldEqual(channel.Value.State);
-        It should_send_a_data_point_with_expected_parity_status = () => data_point.Value.ParityError.ShouldEqual(channel.Value.ParityError);
+        It should_send_a_data_point_with_expected_value = () => data_point.Value.ShouldEqual(channel.Value.Value);
     }
 }

@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../modules/Terasaki/Terasaki.csproj"/>
+    <ProjectReference Include="../Source/Terasaki.csproj"/>
   </ItemGroup>
 
 </Project>

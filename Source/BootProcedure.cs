@@ -16,17 +16,14 @@ namespace Dolittle.TimeSeries.Terasaki
     public class BootProcedure : ICanPerformBootProcedure
     {
         readonly ICoordinator _coordinator;
-        readonly IParser _parser; // TODO: REMOVE THIS WHEN DONE TESTING
 
         /// <summary>
         /// Initializes a new instance of <see cref="BootProcedure"/>
         /// </summary>
         /// <param name="coordinator"><see cref="ICoordinator"/> to initialize</param>
-        /// <param name="parser">REMOVE THIS WHEN DONE TESTING</param>
-        public BootProcedure(ICoordinator coordinator, IParser parser)
+        public BootProcedure(ICoordinator coordinator)
         {
             _coordinator = coordinator;
-            _parser = parser;
         }
 
         /// <inheritdoc/>
@@ -36,24 +33,7 @@ namespace Dolittle.TimeSeries.Terasaki
         public void Perform()
         {
             _coordinator.Initialize();
-            
-            /*
-            // NOTE: This is test code that **MUST** be removed when we've verified it works (PS: clean up using statements :))
-            var stream = File.OpenRead("../../sample/terasaki.sample");
-            _parser.BeginParse(stream, channel => {
-                var dataPoint = new TagDataPoint<ChannelValue>
-                {
-                    System = "Terasaki",
-                    Tag = channel.Id.ToString(),
-                    Value = channel.Value,
-                    Timestamp = Timestamp.UtcNow
-                };
-
-                var json = JsonConvert.SerializeObject(dataPoint, Formatting.None);
-                Console.WriteLine(json);
-            });
-            stream.Close();
-            */
+           
         }
     }
 }

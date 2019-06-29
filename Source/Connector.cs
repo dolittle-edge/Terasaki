@@ -3,27 +3,28 @@
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
 using System;
-using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Dolittle.Collections;
 using Dolittle.TimeSeries.Modules;
 using Dolittle.Logging;
+using Dolittle.TimeSeries.Modules.Connectors;
 
 namespace Dolittle.TimeSeries.Terasaki
 {
     /// <summary>
-    /// Represents an implementation for <see cref="IConnector"/>
+    /// Represents an implementation for <see cref="IAmAStreamingConnector"/>
     /// </summary>
-    public class Connector : IConnector
+    public class Connector : IAmAStreamingConnector
     {
+        /// <inheritdoc/>
+        public event DataReceived DataReceived = (tag, ValueTask, timestamp) => {};
+
         readonly ILogger _logger;
         readonly IParser _parser;
-        readonly ConcurrentBag<Action<Channel>> _subscribers;
-        private readonly ConnectorConfiguration _configuration;
+        readonly ConnectorConfiguration _configuration;
 
         /// <summary>
         /// Initializes a new instance of <see cref="Connector"/>
@@ -38,13 +39,15 @@ namespace Dolittle.TimeSeries.Terasaki
         {
             _logger = logger;
             _parser = parser;
-            _subscribers = new ConcurrentBag<Action<Channel>>();
             _configuration = configuration;
             _logger.Information($"Will connect to '{configuration.Ip}:{configuration.Port}'");
         }
 
         /// <inheritdoc/>
-        public void Start()
+        public Source Name => "Terasaki";
+
+        /// <inheritdoc/>
+        public void Connect()
         {
             Task.Run(() =>
             {
@@ -59,14 +62,7 @@ namespace Dolittle.TimeSeries.Terasaki
                         {
                             _parser.BeginParse(stream, channel =>
                             {
-                                var dataPoint = new TagDataPoint<ChannelValue>
-                                {
-                                    ControlSystem = "Terasaki",
-                                    Tag = channel.Id.ToString(),
-                                    Value = channel.Value,
-                                    Timestamp = Timestamp.UtcNow
-                                };
-                                _subscribers.ForEach(subscriber => subscriber(channel));
+                                DataReceived(channel.Id.ToString(), channel.Value, Timestamp.UtcNow);
                             });
                         }
 
@@ -79,12 +75,6 @@ namespace Dolittle.TimeSeries.Terasaki
                     Thread.Sleep(10000);
                 }
             });
-        }
-
-        /// <inheritdoc/>
-        public void Subscribe(Action<Channel> subscriber)
-        {
-            _subscribers.Add(subscriber);
         }
     }
 }

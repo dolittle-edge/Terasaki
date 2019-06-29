@@ -1,6 +1,6 @@
 # Terasaki
 
-[![Build Status](https://dolittle.visualstudio.com/Dolittle%20open-source%20repositories/_apis/build/status/dolittle-timeseries.Terasaki?branchName=master)](https://dolittle.visualstudio.com/Dolittle%20open-source%20repositories/_build/latest?definitionId=11&branchName=master)
+[![Build Status](https://dev.azure.com/shipos/OpenSource%20Projects/_apis/build/status/shipos-foundation.TimeSeries.NMEA?branchName=master)](https://dev.azure.com/shipos/OpenSource%20Projects/_build/latest?definitionId=3&branchName=master)
 
 ## Cloning
 

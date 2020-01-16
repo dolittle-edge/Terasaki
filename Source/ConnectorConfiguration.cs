@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 using Dolittle.Configuration;
 
-namespace Dolittle.TimeSeries.Terasaki
+namespace RaaLabs.TimeSeries.Terasaki
 {
     /// <summary>
     /// Represents the configuration for <see cref="Connector"/>

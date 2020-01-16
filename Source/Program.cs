@@ -5,11 +5,11 @@
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using Dolittle.TimeSeries.Modules;
-using Dolittle.TimeSeries.Modules.Booting;
+using RaaLabs.TimeSeries.Modules;
+using RaaLabs.TimeSeries.Modules.Booting;
 using Newtonsoft.Json;
 
-namespace Dolittle.TimeSeries.Terasaki
+namespace RaaLabs.TimeSeries.Terasaki
 {
     class Program
     {

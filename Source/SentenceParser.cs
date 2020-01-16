@@ -11,7 +11,7 @@ using Dolittle.Types;
 using Dolittle.Logging;
 
 
-namespace Dolittle.TimeSeries.Terasaki
+namespace RaaLabs.TimeSeries.Terasaki
 {
     /// <summary>
     /// Represents an implementation of <see cref="ISentenceParser"/>

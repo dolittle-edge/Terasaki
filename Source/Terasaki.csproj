@@ -1,10 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="../Build/MSBuild/default.props"/>
+    <Import Project="../default.props"/>
 
     <PropertyGroup>
         <OutputType>Exe</OutputType>
         <TargetFramework>netcoreapp2.1</TargetFramework>
-        <AssemblyName>Dolittle.TimeSeries.Terasaki</AssemblyName>
+        <AssemblyName>RaaLabs.TimeSeries.Terasaki</AssemblyName>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
@@ -13,8 +13,8 @@
     </ItemGroup>
 
     <ItemGroup>
-         <PackageReference Include="Dolittle.TimeSeries.DataTypes" Version="6.*" />
-        <PackageReference Include="Dolittle.TimeSeries.Modules.Connectors" Version="6.*" />
-        <PackageReference Include="Dolittle.TimeSeries.Modules.IoTEdge" Version="6.*" />
+         <PackageReference Include="RaaLabs.TimeSeries.DataTypes" Version="6.*" />
+        <PackageReference Include="RaaLabs.TimeSeries.Modules.Connectors" Version="6.*" />
+        <PackageReference Include="RaaLabs.TimeSeries.Modules.IoTEdge" Version="6.*" />
     </ItemGroup>
 </Project>

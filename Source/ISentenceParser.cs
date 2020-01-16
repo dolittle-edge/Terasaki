@@ -5,7 +5,7 @@
 
 using System.Collections.Generic;
 
-namespace Dolittle.TimeSeries.Terasaki
+namespace RaaLabs.TimeSeries.Terasaki
 {
     /// <summary>
     /// Defines the parser of sentences

@@ -5,7 +5,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace Dolittle.TimeSeries.Terasaki
+namespace RaaLabs.TimeSeries.Terasaki
 {
     /// <summary>
     /// Exception that gets thrown if a sentence has invalid checksum

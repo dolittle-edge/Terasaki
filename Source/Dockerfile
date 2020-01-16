@@ -23,7 +23,7 @@ ARG CONFIGURATION
 
 VOLUME [ "/app/data" ]
 
-COPY Build/MSBuild/* ./Build/MSBuild/
+COPY default.props ./default.props
 COPY Source/*.csproj ./Source/
 
 WORKDIR /app/Source/
@@ -39,4 +39,4 @@ FROM base
 WORKDIR /app
 COPY --from=build-env /app/Source/out ./
 
-ENTRYPOINT ["dotnet", "Dolittle.TimeSeries.Terasaki.dll"]
+ENTRYPOINT ["dotnet", "RaaLabs.TimeSeries.Terasaki.dll"]

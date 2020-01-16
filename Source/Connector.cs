@@ -7,14 +7,14 @@ using System.Linq;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using Dolittle.TimeSeries.Modules;
+using RaaLabs.TimeSeries.Modules;
 using Dolittle.Collections;
 using Dolittle.Logging;
-using Dolittle.TimeSeries.Modules.Connectors;
+using RaaLabs.TimeSeries.Modules.Connectors;
 using System.Text;
 using System.Threading;
 
-namespace Dolittle.TimeSeries.Terasaki
+namespace RaaLabs.TimeSeries.Terasaki
 {
     /// <summary>
     /// Represents an implementation for <see cref="IAmAStreamingConnector"/>

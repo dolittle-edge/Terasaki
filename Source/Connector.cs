@@ -13,6 +13,7 @@ using Dolittle.Logging;
 using RaaLabs.TimeSeries.Modules.Connectors;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace RaaLabs.TimeSeries.Terasaki
 {
@@ -26,6 +27,7 @@ namespace RaaLabs.TimeSeries.Terasaki
 
         readonly ILogger _logger;
         readonly ISentenceParser _parser;
+        readonly IWE500Parser _we500Parser;
 
         readonly ConnectorConfiguration _configuration;
 
@@ -35,14 +37,17 @@ namespace RaaLabs.TimeSeries.Terasaki
         /// <param name="configuration"><see cref="ConnectorConfiguration"/> holding all configuration</param>
         /// <param name="logger"><see cref="ILogger"/> for logging</param>
         /// <param name="parser"><see cref="ISentenceParser"/> for parsing the NMEA sentences</param>
+        /// <param name="we500Parser"><see cref="IWE500Parser"/> for parsing the NMEA sentences</param>
         public Connector(
             ConnectorConfiguration configuration,
             ISentenceParser parser,
+            IWE500Parser we500Parser,
             ILogger logger
 )
         {
             _logger = logger;
             _parser = parser;
+            _we500Parser = we500Parser;
             _configuration = configuration;
             _logger.Information($"Will connect to '{configuration.Ip}:{configuration.Port}'");
         }
@@ -53,6 +58,16 @@ namespace RaaLabs.TimeSeries.Terasaki
         /// <inheritdoc/>
         /// 
         public void Connect()
+        {
+            switch(_configuration.ProtocolType)
+            {
+                case "WE22": ConnectWE22(); break;
+                case "WE500": ConnectWE500(); break;
+                default: _logger.Error("Protocol not defined"); break;
+            }
+        }
+
+        void ConnectWE22()
         {
             while (true)
             {
@@ -87,7 +102,6 @@ namespace RaaLabs.TimeSeries.Terasaki
                             if (started && !skip) sentenceBuilder.Append(character);
                             skip = false;
                         }
-
                     }
                 }
                 catch (Exception ex)
@@ -96,7 +110,36 @@ namespace RaaLabs.TimeSeries.Terasaki
                     Thread.Sleep(2000);
                 }
             }
+        }
 
+        void ConnectWE500()
+        {
+            Task.Run(() =>
+            {
+                while (true)
+                {
+                    try
+                    {
+                        var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
+                        socket.Connect(IPAddress.Parse(_configuration.Ip), _configuration.Port);
+
+                        using (var stream = new NetworkStream(socket, FileAccess.Read, true))
+                        {
+                            _we500Parser.BeginParse(stream, channel =>
+                            {
+                                DataReceived(channel.Id.ToString(), channel.Value, Timestamp.UtcNow);
+                            });
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.Error(ex, "Error while connecting to TCP stream");
+                    }
+
+                    Thread.Sleep(10000);
+                }
+            });
         }
 
         void ParseSentence(string sentence)

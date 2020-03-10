@@ -32,5 +32,10 @@ namespace RaaLabs.TimeSeries.Terasaki
         /// Gets the port that will be used for connecting
         /// </summary>
         public int Port { get; }
+
+        /// <summary>
+        /// Gets the version of the Terasaki protocol. Should be "WE22" or "WE500"
+        /// </summary>
+        public string ProtocolType { get; }
     }
 }

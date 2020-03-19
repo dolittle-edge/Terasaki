@@ -1,102 +1,55 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) Dolittle. All rights reserved.
- *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
 using System;
 using System.Collections.Generic;
-using System.Globalization;
+using System.Text;
 using System.Linq;
-using Dolittle.Collections;
-using Dolittle.Types;
-using Dolittle.Logging;
-
+using System.Text.RegularExpressions;
 
 namespace RaaLabs.TimeSeries.Terasaki
 {
-    /// <summary>
-    /// Represents an implementation of <see cref="ISentenceParser"/>
-    /// </summary>
+    /// <inheritdoc/>
     public class SentenceParser : ISentenceParser
     {
-        readonly ILogger _logger;
+        readonly Regex _sentencePattern;
+        readonly Regex _valuePattern;
 
         /// <summary>
         ///  Initializes a new instance of <see cref="SentenceParser"/>
         /// </summary>
-        /// <param name="logger"></param>
-        public SentenceParser(
-            ILogger logger
-            )
+        public SentenceParser()
         {
-            _logger = logger;
-
-        }
-
-
-
-        /// <inheritdoc/>
-        public bool CanParse(string sentence)
-        {
-            if (!IsValidSentence(sentence)) return false;
-            //sentence = sentence.Substring(1);
-            return true;
+            _sentencePattern = new Regex(@"^(\d{6},?)(.*),\s*\*([0-9A-F]{2})\r?$");
+            _valuePattern = new Regex(@"([a-zA-Z]*)\s*(.*)");
         }
 
         /// <inheritdoc/>
         public IEnumerable<TagWithData> Parse(string sentence)
         {
-            sentence = sentence.TrimEnd();
-            var data = new List<TagWithData>();
-            var originalSentence = sentence;
-            var formatIdentifier = sentence.Substring(1, 6);
+            // Calculate the checksum by folding over the sentence up to the asterisk (*) character, using XOR
+            byte calculatedChecksum = sentence.TakeWhile(c => c != '*').Aggregate((byte)0x00, (sum, next) => (byte)(sum ^ next));
+
+            // Extract the different parts of the sentence using regex
+            var (formatIdentifier, payload, checksumStr, _) = _sentencePattern.Match(sentence).Groups.Skip(1).Select(g => g.Value).ToList();
+            var checksum = Byte.Parse(checksumStr, System.Globalization.NumberStyles.HexNumber);
+
+            if (checksum != calculatedChecksum) throw new InvalidSentenceChecksum(checksum, calculatedChecksum, sentence);
+
+            List<string> values = payload.Split(",").ToList();
+
             var frame = formatIdentifier.Substring(0, 3);
-            var numberofrecords = formatIdentifier.Substring(4, 2);
+            var numberOfRecords = Int32.Parse(formatIdentifier.Substring(3, 3));
 
-            if (sentence[sentence.Length - 3] == '*')
-            {
-                var checksum = Byte.Parse(sentence.Substring(sentence.Length - 2), NumberStyles.HexNumber);
-                //sentence = sentence.Substring(1,sentence.Length-5);
-                sentence = sentence.Substring(sentence.IndexOf("$") + 1, sentence.IndexOf("*") - 1);
-                byte calculatedChecksum = 0;
-                for (var i = 0; i < sentence.Length; i++) calculatedChecksum ^= (byte)sentence[i];
-                ThrowIfSentenceChecksumIsInvalid(sentence, checksum, calculatedChecksum);
+            if (numberOfRecords != values.Count) throw new Exception("Invalid number of channels");
 
-            }
-            else sentence = sentence.Substring(1);
-
-            var values = sentence.Substring(7).Split(',');
-            for (var record = 0; record < Int32.Parse(numberofrecords); record++)
-            {
-                var payload = values[record];
-                var tag = $"{frame}:{record + 1}";
-                try
-                {
-                    if (payload.Any(char.IsDigit))
-                    {
-                        data.Add(new TagWithData(tag, float.Parse(payload)));
-                    }
-                }
-                catch (FormatException ex)
-                {
-                    _logger.Error(ex, $"Trouble parsing  {tag} : {payload}");
-                }
-            }
-
-            return data;
-
+            return values.SelectMany((value, index) => ParseValue(frame, index + 1, value));
         }
 
-        bool IsValidSentence(string sentence)
+        private IEnumerable<TagWithData> ParseValue(string frame, int record, string value)
         {
-            if (!sentence.StartsWith('$')) return false;
-            if (sentence.Length < 7) return false;
-            if (!sentence.Substring(1, 6).All(char.IsDigit)) return false;
-            return true;
-        }
+            var tag = $"{frame}:{record}";
+            var (state, valueStr, _) = _valuePattern.Match(value).Groups.Skip(1).Select(g => g.Value).ToList();
+            var successful = float.TryParse(valueStr, out float parsedValue);
 
-        void ThrowIfSentenceChecksumIsInvalid(string sentence, byte actualChecksum, byte expectedChecksum)
-        {
-            if (expectedChecksum != actualChecksum) throw new InvalidSentenceChecksum(actualChecksum, expectedChecksum, sentence);
+            return successful ? new List<TagWithData> { new TagWithData(tag, parsedValue) } : new List<TagWithData>();
         }
     }
 }

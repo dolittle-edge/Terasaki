@@ -45,7 +45,8 @@ namespace RaaLabs.TimeSeries.Terasaki
 
         private IEnumerable<TagWithData> ParseValue(string frame, int record, string value)
         {
-            var tag = $"{frame}:{record}";
+            var parsedFrame = int.Parse(frame);
+            var tag = $"{parsedFrame}:{record}";
             var (state, valueStr, _) = _valuePattern.Match(value).Groups.Skip(1).Select(g => g.Value).ToList();
             var successful = float.TryParse(valueStr, out float parsedValue);
 

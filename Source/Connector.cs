@@ -61,7 +61,7 @@ namespace RaaLabs.TimeSeries.Terasaki
 
                     using (var stream = new NetworkStream(socket, FileAccess.Read, true))
                     {
-                        foreach(var line in StreamReader.ReadLine(stream))
+                        foreach(var line in TerasakiStreamReader.ReadLine(stream))
                         {
                             ParseSentence(line);
                         }

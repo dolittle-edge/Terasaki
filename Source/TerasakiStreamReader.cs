@@ -9,7 +9,7 @@ namespace RaaLabs.TimeSeries.Terasaki
     /// <summary>
     /// 
     /// </summary>
-    public class StreamReader
+    public class TerasakiStreamReader
     {
         /// <summary>
         /// Read from the stream, one line at a time.
@@ -22,8 +22,16 @@ namespace RaaLabs.TimeSeries.Terasaki
 
             while (true)
             {
-                dataStream.SkipWhile(b => (b != 0x2) && (b != '$')).Skip(1);
-                var line = dataStream.TakeWhile(b => (b != 0x3) && (b != '\n')).Skip(1).ToArray();
+                byte[] line;
+                try
+                {
+                    var _ = dataStream.TakeWhile(b => !IsStartByte(b)).ToArray();
+                    line = dataStream.TakeWhile(b => !IsStopByte(b)).ToArray();
+                }
+                catch (EndOfStreamException)
+                {
+                    yield break;
+                }
                 yield return Encoding.ASCII.GetString(line);
             }
         }
@@ -36,6 +44,16 @@ namespace RaaLabs.TimeSeries.Terasaki
                 if (data < 0) throw new EndOfStreamException();
                 yield return (byte)data;
             }
+        }
+
+        private static bool IsStartByte(byte b)
+        {
+            return b == 0x2 || b == '$';
+        }
+
+        private static bool IsStopByte(byte b)
+        {
+            return b == 0x3 || b == '\n';
         }
     }
 }

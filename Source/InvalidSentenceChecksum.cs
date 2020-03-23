@@ -18,7 +18,7 @@ namespace RaaLabs.TimeSeries.Terasaki
         /// <param name="actualChecksum">The invalid checksum </param>
         /// <param name="expectedChecksum">The expected checksum</param>
         /// <param name="sentence">The invalid sentence</param>
-        public InvalidSentenceChecksum(byte actualChecksum, byte expectedChecksum, string sentence) : base($"Checksum '{actualChecksum}' is invalid, expecting '{expectedChecksum}' for sentence '{sentence}'. Please refer to the standard for NMEA.")
+        public InvalidSentenceChecksum(byte actualChecksum, byte expectedChecksum, string sentence) : base($"Checksum '{actualChecksum}' is invalid, expecting '{expectedChecksum}' for sentence '{sentence}'. Please refer to the standard for Terasaki.")
         {
 
         }

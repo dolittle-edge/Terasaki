@@ -17,10 +17,12 @@ namespace RaaLabs.TimeSeries.Terasaki
         /// </summary>
         /// <param name="ip">The IP address for the connector</param>
         /// <param name="port">The Port to connect to</param>
-        public ConnectorConfiguration(string ip, int port)
+        /// <param name="timeout">The timeout for the TCP connection</param>
+        public ConnectorConfiguration(string ip, int port, int timeout)
         {
             Ip = ip;
             Port = port;
+            Timeout = timeout;
         }
 
         /// <summary>
@@ -32,5 +34,10 @@ namespace RaaLabs.TimeSeries.Terasaki
         /// Gets the port that will be used for connecting
         /// </summary>
         public int Port { get; }
+
+        /// <summary>
+        /// Gets the read timeout for the TCP connection
+        /// </summary>
+        public int Timeout { get; }
     }
 }

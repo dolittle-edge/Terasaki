@@ -5,6 +5,7 @@
 using System;
 using System.Linq;
 using System.IO;
+using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using RaaLabs.TimeSeries.Modules;
@@ -54,13 +55,14 @@ namespace RaaLabs.TimeSeries.Terasaki
         {
             while(true)
             {
+                Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
                 try
                 {
-                    var socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
                     socket.Connect(IPAddress.Parse(_configuration.Ip), _configuration.Port);
 
                     using (var stream = new NetworkStream(socket, FileAccess.Read, true))
                     {
+                        stream.ReadTimeout = _configuration.Timeout;
                         foreach(var line in TerasakiStreamReader.ReadLine(stream))
                         {
                             ParseSentence(line);
@@ -70,9 +72,14 @@ namespace RaaLabs.TimeSeries.Terasaki
                 catch (Exception ex)
                 {
                     _logger.Error(ex, "Error while connecting to TCP stream");
+                    
+                    Thread.Sleep(10000);
                 }
-
-                Thread.Sleep(10000);
+                finally
+                {
+                    socket.Close();
+                    socket.Dispose();
+                }
             }
         }
 

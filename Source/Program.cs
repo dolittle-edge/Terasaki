@@ -4,7 +4,6 @@
  *--------------------------------------------------------------------------------------------*/
 using RaaLabs.Edge;
 using RaaLabs.Edge.Modules.EventHandling;
-using RaaLabs.Edge.Modules.Logging;
 using RaaLabs.Edge.Modules.EdgeHub;
 using RaaLabs.Edge.Modules.Configuration;
 using RaaLabs.Edge.Connectors.Terasaki;
@@ -19,7 +18,6 @@ namespace RaaLabs.TimeSeries.Terasaki
 
             var application = new ApplicationBuilder()
                 .WithModule<EventHandling>()
-                .WithModule<Logging>()
                 .WithModule<Configuration>()
                 .WithModule<EdgeHub>()
                 .WithType<SentenceParser>()

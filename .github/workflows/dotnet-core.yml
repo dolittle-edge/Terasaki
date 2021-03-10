@@ -85,7 +85,7 @@ jobs:
         FILE_PATH: ${{ github.workspace }}/${{ env.COVERAGE_FOLDER }}/coverage.opencover.xml
 
     - name: SonarScanner for .NET Core with pull request decoration support
-      uses: highbyte/sonarscan-dotnet@1.0.2
+      uses: highbyte/sonarscan-dotnet@2.0
       with:
         sonarProjectKey: RaaLabs_Terasaki
         sonarProjectName:  Terasaki

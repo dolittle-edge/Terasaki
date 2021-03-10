@@ -8,7 +8,7 @@ using Machine.Specifications;
 using RaaLabs.Edge.Connectors.Terasaki;
 using System.Linq;
 
-namespace Dolittle.Edge.Connectors.Terasaki.for_TerasakiStreamReader
+namespace RaaLabs.Edge.Connectors.Terasaki.for_TerasakiStreamReader
 {
     public class when_reading_from_stream
     {

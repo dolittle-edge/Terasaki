@@ -1,6 +1,6 @@
 # Terasaki
 
-[![Build Status](https://dev.azure.com/shipos/OpenSource%20Projects/_apis/build/status/shipos-foundation.TimeSeries.NMEA?branchName=master)](https://dev.azure.com/shipos/OpenSource%20Projects/_build/latest?definitionId=3&branchName=master)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=RaaLabs_Edge&metric=coverage)](https://sonarcloud.io/dashboard?id=RaaLabs_TimeSeries.Terasaki)
 
 ## Cloning
 

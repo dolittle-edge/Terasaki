@@ -13,10 +13,9 @@
     <ItemGroup>
         <PackageReference Include="Polly" Version="7.2.1" />
         <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
-        <PackageReference Include="RaaLabs.Edge" Version="1.0.0-rc3" />
-        <PackageReference Include="RaaLabs.Edge.Modules.Logging" Version="1.0.0-rc3" />
-        <PackageReference Include="RaaLabs.Edge.Modules.Configuration" Version="1.0.0-rc3" />
-        <PackageReference Include="RaaLabs.Edge.Modules.EdgeHub" Version="1.0.0-rc3" />
-        <PackageReference Include="RaaLabs.Edge.Modules.EventHandling" Version="1.0.0-rc3" />
+        <PackageReference Include="RaaLabs.Edge" Version="1.0.0" />
+        <PackageReference Include="RaaLabs.Edge.Modules.Configuration" Version="1.0.0" />
+        <PackageReference Include="RaaLabs.Edge.Modules.EdgeHub" Version="1.0.0" />
+        <PackageReference Include="RaaLabs.Edge.Modules.EventHandling" Version="1.0.0" />
     </ItemGroup>
 </Project>

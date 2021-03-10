@@ -6,11 +6,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Dolittle.Logging;
 using Machine.Specifications;
 using Moq;
 
-namespace RaaLabs.TimeSeries.Terasaki.for_Parser.given
+namespace RaaLabs.Edge.Connectors.Terasaki.for_Parser.given
 {
     public abstract class a_parser_that_streams_bytes
     {
@@ -19,14 +18,14 @@ namespace RaaLabs.TimeSeries.Terasaki.for_Parser.given
         static MemoryStream stream;
 
         protected static byte[] bytes;
-        protected static Dictionary<Tag, TagWithData> dataPoints;
+        protected static Dictionary<string, TagWithData> dataPoints;
 
         protected static Exception exception;
 
         Establish context = () =>
         {
             parser = new SentenceParser();
-            dataPoints = new Dictionary<Tag, TagWithData>();
+            dataPoints = new Dictionary<string, TagWithData>();
         };
 
         Because of = () => 

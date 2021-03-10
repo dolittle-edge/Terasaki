@@ -1,42 +1,23 @@
-FROM microsoft/dotnet:2.1-runtime-stretch-slim as base
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+WORKDIR /app
 
-ARG CONFIGURATION=Release
+VOLUME [ "/app/data" ]
 
-RUN echo Configuration = $CONFIGURATION
+# COPY default.props ./default.props
 
-RUN if [ "$CONFIGURATION" = "Debug" ] ; then apt-get update && \
-    apt-get install -y --no-install-recommends unzip procps && \
-    rm -rf /var/lib/apt/lists/* \
-    ; fi
+COPY Source/ ./Source/
+
+WORKDIR /app/Source
+
+RUN dotnet restore
+
+RUN dotnet publish -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/runtime:5.0-buster-slim
+WORKDIR /app
+COPY --from=build-env /app/Source/out ./
 
 RUN useradd -ms /bin/bash moduleuser
 USER moduleuser
 
-
-RUN if [ "$CONFIGURATION" = "debug" ] ; then curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l ~/vsdbg ; fi
-
-
-FROM microsoft/dotnet:2.1-sdk AS build-env
-WORKDIR /app
-
-ARG CONFIGURATION
-
-VOLUME [ "/app/data" ]
-
-COPY default.props ./default.props
-COPY Source/*.csproj ./Source/
-
-WORKDIR /app/Source/
-
-RUN dotnet restore
-
-COPY Source/ ./
-RUN dotnet publish -c $CONFIGURATION -o out
-
-
-FROM base
-
-WORKDIR /app
-COPY --from=build-env /app/Source/out ./
-
-ENTRYPOINT ["dotnet", "RaaLabs.TimeSeries.Terasaki.dll"]
+ENTRYPOINT ["dotnet", "RaaLabs.Edge.Connectors.Terasaki.dll"]

@@ -5,7 +5,7 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace RaaLabs.TimeSeries.Terasaki
+namespace RaaLabs.Edge.Connectors.Terasaki
 {
     /// <summary>
     /// Exception that gets thrown if a sentence has invalid checksum

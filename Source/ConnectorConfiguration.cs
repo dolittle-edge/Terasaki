@@ -2,15 +2,16 @@
  *  Copyright (c) RaaLabs. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-using Dolittle.Configuration;
+using RaaLabs.Edge.Modules.Configuration;
+using RaaLabs.Edge.Connectors.Terasaki;
 
 namespace RaaLabs.TimeSeries.Terasaki
 {
     /// <summary>
-    /// Represents the configuration for <see cref="Connector"/>
+    /// Represents the configuration for <see cref="TcpConnector"/>
     /// </summary>
-    [Name("Connector")]
-    public class ConnectorConfiguration : IConfigurationObject
+    [Name("Connector.json")]
+    public class ConnectorConfiguration : IConfiguration
     {
         /// <summary>
         /// Initializes a new instance of <see cref="ConnectorConfiguration"/>

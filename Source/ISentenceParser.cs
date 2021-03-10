@@ -5,7 +5,7 @@
 
 using System.Collections.Generic;
 
-namespace RaaLabs.TimeSeries.Terasaki
+namespace RaaLabs.Edge.Connectors.Terasaki
 {
     /// <summary>
     /// Defines the parser of sentences

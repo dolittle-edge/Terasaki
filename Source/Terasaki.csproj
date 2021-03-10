@@ -1,10 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
-    <Import Project="../default.props"/>
-
     <PropertyGroup>
         <OutputType>Exe</OutputType>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
-        <AssemblyName>RaaLabs.TimeSeries.Terasaki</AssemblyName>
+        <TargetFramework>net5.0</TargetFramework>
+        <AssemblyName>RaaLabs.Edge.Connectors.Terasaki</AssemblyName>
         <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     </PropertyGroup>
 
@@ -13,8 +11,11 @@
     </ItemGroup>
 
     <ItemGroup>
-         <PackageReference Include="RaaLabs.TimeSeries.DataTypes" Version="6.*" />
-        <PackageReference Include="RaaLabs.TimeSeries.Modules.Connectors" Version="6.*" />
-        <PackageReference Include="RaaLabs.TimeSeries.Modules.IoTEdge" Version="6.*" />
+        <PackageReference Include="Polly" Version="7.2.1" />
+        <PackageReference Include="Microsoft.Extensions.Options" Version="5.0.0" />
+        <PackageReference Include="RaaLabs.Edge" Version="1.0.0" />
+        <PackageReference Include="RaaLabs.Edge.Modules.Configuration" Version="1.0.0" />
+        <PackageReference Include="RaaLabs.Edge.Modules.EdgeHub" Version="1.0.0" />
+        <PackageReference Include="RaaLabs.Edge.Modules.EventHandling" Version="1.0.0" />
     </ItemGroup>
 </Project>

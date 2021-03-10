@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.IO;
 
-namespace RaaLabs.TimeSeries.Terasaki
+namespace RaaLabs.Edge.Connectors.Terasaki
 {
     /// <inheritdoc/>
     public class SentenceParser : ISentenceParser
@@ -21,9 +21,9 @@ namespace RaaLabs.TimeSeries.Terasaki
 
             // Extract the different parts of the sentence using regex
             var match = _sentencePattern.Match(sentence);
-            ThrowIfUnmatchedPattern(match);
+            ThrowIfUnmatchedPattern(match, sentence);
 
-            var (formatIdentifier, payload, checksumStr, _) = match.Groups.Skip(1).Select(g => g.Value).ToList();
+            var (formatIdentifier, payload, checksumStr, _) = match.Groups.Values.Skip(1).Select(g => g.Value).ToList();
             var checksum = Byte.Parse(checksumStr, System.Globalization.NumberStyles.HexNumber);
 
             ThrowIfInvalidChecksum(checksum, calculatedChecksum, sentence);
@@ -41,15 +41,15 @@ namespace RaaLabs.TimeSeries.Terasaki
         private IEnumerable<TagWithData> ParseValue(string frame, int record, string value)
         {
             var tag = $"{frame}:{record}";
-            var (state, valueStr, _) = _valuePattern.Match(value).Groups.Skip(1).Select(g => g.Value).ToList();
+            var (state, valueStr, _) = _valuePattern.Match(value).Groups.Values.Skip(1).Select(g => g.Value).ToList();
             var successful = float.TryParse(valueStr, out float parsedValue);
 
             return successful ? new List<TagWithData> { new TagWithData(tag, parsedValue) } : new List<TagWithData>();
         }
 
-        private void ThrowIfUnmatchedPattern(Match match)
+        private void ThrowIfUnmatchedPattern(Match match, string sentence)
         {
-            if (!match.Success) throw new InvalidDataException();
+            if (!match.Success) throw new InvalidDataException(sentence);
         }
 
         private void ThrowIfInvalidChecksum(byte checksum, byte calculatedChecksum, string sentence)

@@ -4,7 +4,7 @@
  *--------------------------------------------------------------------------------------------*/
 using Machine.Specifications;
 
-namespace RaaLabs.TimeSeries.Terasaki.for_Parser
+namespace RaaLabs.Edge.Connectors.Terasaki.for_Parser
 {
     public class when_parsing_two_blocks_with_two_channels_each : given.a_parser_that_streams_bytes
     {

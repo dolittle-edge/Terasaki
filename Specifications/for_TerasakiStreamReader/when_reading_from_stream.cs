@@ -5,10 +5,10 @@
 using System.IO;
 using System.Text;
 using Machine.Specifications;
-using RaaLabs.TimeSeries.Terasaki;
+using RaaLabs.Edge.Connectors.Terasaki;
 using System.Linq;
 
-namespace Dolittle.TimeSeries.Terasaki.for_TerasakiStreamReader
+namespace Dolittle.Edge.Connectors.Terasaki.for_TerasakiStreamReader
 {
     public class when_reading_from_stream
     {

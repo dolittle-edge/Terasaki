@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Linq;
 
-namespace RaaLabs.TimeSeries.Terasaki
+namespace RaaLabs.Edge.Connectors.Terasaki
 {
     /// <summary>
     /// 

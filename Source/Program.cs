@@ -2,12 +2,11 @@
  *  Copyright (c) RaaLabs. All rights reserved.
  *  Licensed under the MIT License. See LICENSE in the project root for license information.
  *--------------------------------------------------------------------------------------------*/
-using System;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
-using RaaLabs.TimeSeries.Modules;
-using RaaLabs.TimeSeries.Modules.Booting;
-using Newtonsoft.Json;
+using RaaLabs.Edge;
+using RaaLabs.Edge.Modules.EventHandling;
+using RaaLabs.Edge.Modules.EdgeHub;
+using RaaLabs.Edge.Modules.Configuration;
+using RaaLabs.Edge.Connectors.Terasaki;
 
 namespace RaaLabs.TimeSeries.Terasaki
 {
@@ -15,7 +14,18 @@ namespace RaaLabs.TimeSeries.Terasaki
     {
         static void Main(string[] args)
         {
-            Bootloader.Configure(_ => {}).Start().Wait();
+            //Bootloader.Configure(_ => {}).Start().Wait();
+
+            var application = new ApplicationBuilder()
+                .WithModule<EventHandling>()
+                .WithModule<Configuration>()
+                .WithModule<EdgeHub>()
+                .WithType<SentenceParser>()
+                .WithTask<TcpConnector>()
+                .WithHandler<TerasakiLineHandler>()
+                .Build();
+
+            application.Run().Wait();
         }
     }
 }

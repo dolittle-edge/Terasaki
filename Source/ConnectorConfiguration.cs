@@ -1,16 +1,19 @@
-/*---------------------------------------------------------------------------------------------
- *  Copyright (c) RaaLabs. All rights reserved.
- *  Licensed under the MIT License. See LICENSE in the project root for license information.
- *--------------------------------------------------------------------------------------------*/
+// Copyright (c) RaaLabs. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using RaaLabs.Edge.Modules.Configuration;
 using RaaLabs.Edge.Connectors.Terasaki;
+using System.Diagnostics.CodeAnalysis;
 
 namespace RaaLabs.TimeSeries.Terasaki
 {
     /// <summary>
     /// Represents the configuration for <see cref="TcpConnector"/>
     /// </summary>
-    [Name("Connector.json")]
+
+    [ExcludeFromCodeCoverage] // Do not need to test configuration
+    [Name("connector.json")]
+    [RestartOnChange]
     public class ConnectorConfiguration : IConfiguration
     {
         /// <summary>

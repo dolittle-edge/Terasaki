@@ -12,7 +12,7 @@ namespace RaaLabs.Edge.Connectors.Terasaki
     /// <summary>
     /// 
     /// </summary>
-    public class TerasakiStreamReader
+    static class TerasakiStreamReader
     {
         /// <summary>
         /// Read from the stream

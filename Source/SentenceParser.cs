@@ -57,7 +57,7 @@ namespace RaaLabs.Edge.Connectors.Terasaki
         private void ThrowIfInvalidChecksum(byte checksum, byte calculatedChecksum, string sentence)
         {
 
-            if (checksum != calculatedChecksum) throw new InvalidSentenceChecksum(checksum, calculatedChecksum, sentence);
+            if (checksum != calculatedChecksum) throw new InvalidSentenceChecksumException(checksum, calculatedChecksum, sentence);
         }
     }
 }

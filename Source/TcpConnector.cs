@@ -1,23 +1,24 @@
+// Copyright (c) RaaLabs. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using RaaLabs.Edge.Modules.EventHandling;
 using RaaLabs.TimeSeries.Terasaki;
 using Serilog;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using Polly;
 using System.Threading.Tasks;
 
 namespace RaaLabs.Edge.Connectors.Terasaki
 {
-    class TcpConnector : IRunAsync, IProduceEvent<events.TcpLineReceived>
+    class TcpConnector : IRunAsync, IProduceEvent<Events.TcpLineReceived>
     {
         private readonly ILogger _logger;
         private readonly ConnectorConfiguration _configuration;
 
-        public event EventEmitter<events.TcpLineReceived> TcpLineReceived;
+        public event EventEmitter<Events.TcpLineReceived> TcpLineReceived;
 
         public TcpConnector(ConnectorConfiguration configuration, ILogger logger)
         {
@@ -27,12 +28,12 @@ namespace RaaLabs.Edge.Connectors.Terasaki
 
         public async Task Run()
         {
-            while(true)
+            while (true)
             {
                 _logger.Information("Setting up TCP connector");
                 var policy = Policy
                     .Handle<Exception>()
-                    .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
+                    .WaitAndRetryForeverAsync(retryAttempt => TimeSpan.FromSeconds(Math.Min(Math.Pow(2, retryAttempt),3600)),
                     (exception, timeSpan, context) =>
                     {
                         _logger.Error(exception, $"Terasaki connector threw an exception during connect - retrying");
@@ -42,7 +43,7 @@ namespace RaaLabs.Edge.Connectors.Terasaki
                 {
                     await Connect();
                 });
-
+                
                 await Task.Delay(1000);
             }
         }
@@ -59,15 +60,37 @@ namespace RaaLabs.Edge.Connectors.Terasaki
             {
                 stream.ReadTimeout = 30_000;
                 var reader = TerasakiStreamReader.ReadLineAsync(stream).GetAsyncEnumerator();
-                while (await reader.MoveNextAsync())
+                try
                 {
-                    var line = reader.Current;
-                    TcpLineReceived(line);
+                    while (true)
+                    {
+                        await DoWithTimeout(reader.MoveNextAsync(), 3_000);
+                        var sentence = reader.Current;
+                        TcpLineReceived(sentence);
+                    }
+                }
+                finally
+                {
+                    _logger.Information("Done reading TCP stream");
+                    socket.Close();
                 }
             }
+        }
 
-            _logger.Information("Done reading TCP stream");
-            socket.Close();
+        /// <summary>
+        /// Helper method that can handle timeout for ValueTasks.
+        /// </summary>
+        async ValueTask<T> DoWithTimeout<T>(ValueTask<T> valueTask, int timeout)
+        {
+            var task = valueTask.AsTask();
+            if (await Task.WhenAny(task, Task.Delay(timeout)) == task)
+            {
+                return await task;
+            }
+            else
+            {
+                throw new OperationCanceledException();
+            }
         }
     }
 }

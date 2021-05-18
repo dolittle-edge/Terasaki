@@ -1,6 +1,8 @@
+// Copyright (c) RaaLabs. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.IO;
@@ -54,7 +56,8 @@ namespace RaaLabs.Edge.Connectors.Terasaki
 
         private void ThrowIfInvalidChecksum(byte checksum, byte calculatedChecksum, string sentence)
         {
-            if (checksum != calculatedChecksum) throw new InvalidSentenceChecksum(checksum, calculatedChecksum, sentence);
+
+            if (checksum != calculatedChecksum) throw new InvalidSentenceChecksumException(checksum, calculatedChecksum, sentence);
         }
     }
 }

@@ -1,54 +1,21 @@
+// Copyright (c) RaaLabs. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.IO;
 using System.Linq;
-using Serilog;
 
 namespace RaaLabs.Edge.Connectors.Terasaki
 {
     /// <summary>
     /// 
     /// </summary>
-    public class TerasakiStreamReader
+    static class TerasakiStreamReader
     {
         /// <summary>
-        /// Read from the stream, one line at a time.
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <returns></returns>
-        public static IEnumerable<string> ReadLine(Stream stream)
-        {
-            var dataStream = Read(stream);
-
-            while (true)
-            {
-                byte[] line;
-                try
-                {
-                    var _ = dataStream.TakeWhile(b => !IsStartByte(b)).ToArray();
-                    line = dataStream.TakeWhile(b => !IsStopByte(b)).ToArray();
-                }
-                catch (EndOfStreamException)
-                {
-                    yield break;
-                }
-                yield return Encoding.ASCII.GetString(line);
-            }
-        }
-
-        private static IEnumerable<byte> Read(Stream stream)
-        {
-            while(true)
-            {
-                var data = stream.ReadByte();
-                if (data < 0) throw new EndOfStreamException();
-                yield return (byte)data;
-            }
-        }
-
-        /// <summary>
-        /// 
+        /// Read from the stream
         /// </summary>
         /// <param name="stream"></param>
         /// <returns></returns>
@@ -56,7 +23,7 @@ namespace RaaLabs.Edge.Connectors.Terasaki
         {
             List<byte> line = new List<byte>();
             var byteStreamEnumerator = ReadAsync(stream).GetAsyncEnumerator();
-            while(true)
+            while (true)
             {
                 while (await byteStreamEnumerator.MoveNextAsync())
                     if (IsStartByte(byteStreamEnumerator.Current)) break;
@@ -76,17 +43,15 @@ namespace RaaLabs.Edge.Connectors.Terasaki
 
         private static async IAsyncEnumerable<byte> ReadAsync(Stream stream)
         {
-            Memory<byte> buffer = new Memory<byte>(new byte[1024]);
-            byte[] bufferr = new byte[1024];
+            byte[] buffer = new byte[1024];
 
             while (true)
             {
-                var sizz = await stream.ReadAsync(bufferr, 0, 1024);
-                //var size = await stream.ReadAsync(buffer);
+                var size = await stream.ReadAsync(buffer.AsMemory(0, 1024));
 
-                foreach (var i in Enumerable.Range(0, sizz))
+                foreach (var i in Enumerable.Range(0, size))
                 {
-                    yield return bufferr[i];
+                    yield return buffer[i];
                 }
             }
         }

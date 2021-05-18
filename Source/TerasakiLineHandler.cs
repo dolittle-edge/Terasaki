@@ -1,17 +1,16 @@
+// Copyright (c) RaaLabs. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
 using RaaLabs.Edge.Modules.EventHandling;
-using RaaLabs.TimeSeries.Terasaki;
 using Serilog;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RaaLabs.Edge.Connectors.Terasaki
 {
-    class TerasakiLineHandler : IConsumeEvent<events.TcpLineReceived>, IProduceEvent<events.TerasakiDatapointOutput>
+    public class TerasakiLineHandler : IConsumeEvent<Events.TcpLineReceived>, IProduceEvent<Events.TerasakiDatapointOutput>
     {
-        public event EventEmitter<events.TerasakiDatapointOutput> SendDatapoint;
+        public event EventEmitter<Events.TerasakiDatapointOutput> SendDatapoint;
 
         private readonly ILogger _logger;
         private readonly SentenceParser _parser;
@@ -22,22 +21,20 @@ namespace RaaLabs.Edge.Connectors.Terasaki
             _parser = parser;
         }
 
-        public void Handle(events.TcpLineReceived @event)
+        public void Handle(Events.TcpLineReceived @event)
         {
             try
             {
-                var tags = _parser.Parse(@event.Value).ToList();
-                var timestamp = (long)(DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalMilliseconds;
+                var tags = _parser.Parse(@event.Sentence).ToList();
+                var timestamp = DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
                 tags.ForEach(tag =>
                 {
-                    _logger.Information($"Tag: {tag.Tag}, Value : {tag.Data}");
-
-                    var output = new events.TerasakiDatapointOutput
+                    var output = new Events.TerasakiDatapointOutput
                     {
-                        source = "Terasaki",
-                        tag = tag.Tag,
-                        timestamp = timestamp,
-                        value = tag.Data
+                        Source = "Terasaki",
+                        Tag = tag.Tag,
+                        Timestamp = timestamp,
+                        Value = tag.Data
                     };
 
                     SendDatapoint(output);

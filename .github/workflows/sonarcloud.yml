@@ -1,7 +1,6 @@
-name: .NET Core
+name: SonarCloud
 
 env:
-  PRERELEASE_BRANCHES: experimental,alpha,beta,rc # Comma separated list of prerelease branch names. 'alpha,rc, ...'
   COVERAGE_FOLDER: Coverage
   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -10,12 +9,10 @@ on:
   push:
     branches:
       - '**'
-  pull_request:
-    types: [ closed ]
 
 jobs:
   ci:
-    name: Integration
+    name: Code Coverage
     runs-on: ubuntu-latest
     outputs:
       should-publish: ${{ steps.context.outputs.should-publish }}
@@ -27,7 +24,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         submodules: recursive 
-    - name: Setup .NET Core
+    - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '5.0.x'
@@ -37,12 +34,12 @@ jobs:
       run: dotnet build --no-restore --configuration Release
     - name: Test and report coverage
       run: dotnet test --configuration Release --no-build /p:CollectCoverage=true /p:CoverletOutput=${{ github.workspace }}/${{ env.COVERAGE_FOLDER }}/ /p:MergeWith=${{ github.workspace }}/${{ env.COVERAGE_FOLDER }}/coverage/ /p:CoverletOutputFormat=opencover
-
-    - name: SonarScanner for .NET Core with pull request decoration support
+  
+    - name: SonarScanner for .NET with pull request decoration support
       uses: highbyte/sonarscan-dotnet@2.0
       with:
-        sonarProjectKey: RaaLabs_TimeSeries.Terasaki
-        sonarProjectName:  TimeSeries.Terasaki
+        sonarProjectKey: RaaLabs_${{ github.event.repository.name }}
+        sonarProjectName:  ${{ github.event.repository.name }}
         sonarOrganization: raalabs
         dotnetTestArguments: --logger trx --collect:"XPlat Code Coverage" -- DataCollectionRunSettings.DataCollectors.DataCollector.Configuration.Format=opencover
         sonarBeginArguments: /d:sonar.cs.opencover.reportsPaths="**/TestResults/**/coverage.opencover.xml" -d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"        

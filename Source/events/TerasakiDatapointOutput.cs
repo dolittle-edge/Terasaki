@@ -1,22 +1,32 @@
 using RaaLabs.Edge.Modules.EdgeHub;
-using RaaLabs.Edge.Modules.EventHandling;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RaaLabs.Edge.Connectors.Terasaki.events
+
+namespace RaaLabs.Edge.Connectors.Terasaki.Events
 {
+    /// <summary>
+    /// The data point on the format it should be sent to EdgeHub
+    /// </summary>
     [OutputName("output")]
-    class TerasakiDatapointOutput : IEdgeHubOutgoingEvent
+    public class TerasakiDatapointOutput : IEdgeHubOutgoingEvent
     {
-        public string source { get; set; }
+        /// <summary>
+        /// Represents the source system.
+        /// </summary>
+        public string Source { get; set; }
 
-        public string tag { get; set; }
+        /// <summary>
+        /// Gets or sets the tag. Represens the sensor name from the source system.
+        /// </summary>
+        public string Tag { get; set; }
 
-        public dynamic value { get; set; }
+        /// <summary>
+        /// Gets or sets the value
+        /// </summary>
+        public dynamic Value { get; set; }
 
-        public long timestamp { get; set; }
+        /// <summary>
+        /// Gets or sets the timestamp in the form of EPOCH milliseconds granularity
+        /// </summary>
+        public long Timestamp { get; set; }
     }
 }

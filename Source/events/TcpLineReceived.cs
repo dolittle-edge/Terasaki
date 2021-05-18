@@ -1,20 +1,22 @@
 using RaaLabs.Edge.Modules.EventHandling;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace RaaLabs.Edge.Connectors.Terasaki.events
+namespace RaaLabs.Edge.Connectors.Terasaki.Events
 {
-    class TcpLineReceived : IEvent
+    /// <summary>
+    /// Implements event for TcpLineReceived 
+    /// </summary>
+    public class TcpLineReceived : IEvent
     {
-        public string Value { get; set; }
+        /// <summary>
+        /// gets and sets the Terasaki sentence. 
+        /// </summary>
+        public string Sentence { get; set; }
 
-        public TcpLineReceived(string value)
+        /// <inheritdoc/>
+        public TcpLineReceived(string sentence)
         {
-            Value = value;
+            Sentence = sentence;
         }
-        public static implicit operator TcpLineReceived(string value) => new TcpLineReceived(value);
+        public static implicit operator TcpLineReceived(string sentence) => new TcpLineReceived(sentence);
     }
 }

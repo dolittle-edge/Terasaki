@@ -1,8 +1,8 @@
 # Connectors.Terasaki
 
-[![.NET 5.0](https://github.com/RaaLabs/Connectors.Terasaki/actions/workflows/dotnet-core.yml/badge.svg)](https://github.com/RaaLabs/Connectors.Terasaki/actions/workflows/dotnet-core.yml)
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=RaaLabs_TimeSeries.Terasaki&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=RaaLabs_TimeSeries.Terasaki)
-[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=RaaLabs_TimeSeries.Terasaki&metric=coverage)](https://sonarcloud.io/dashboard?id=RaaLabs_TimeSeries.Terasaki)
+[![.NET 5.0](https://github.com/RaaLabs/Connectors.Terasaki/actions/workflows/dotnet.yml/badge.svg)](https://github.com/RaaLabs/Connectors.Terasaki/actions/workflows/dotnet.yml)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=RaaLabs_Connectors.Terasaki&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=RaaLabs_Connectors.Terasaki)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=RaaLabs_Connectors.Terasaki&metric=coverage)](https://sonarcloud.io/dashboard?id=RaaLabs_Connectors.Terasaki)
 
 This document describes the Connectors.Terasaki module for RaaLabs Edge.
 

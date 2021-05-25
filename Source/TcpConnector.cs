@@ -64,7 +64,7 @@ namespace RaaLabs.Edge.Connectors.Terasaki
                 {
                     while (true)
                     {
-                        await DoWithTimeout(reader.MoveNextAsync(), 3_000);
+                        await DoWithTimeout(reader.MoveNextAsync(), 30_000);
                         var sentence = reader.Current;
                         TcpLineReceived(sentence);
                     }

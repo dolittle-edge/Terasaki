@@ -17,13 +17,14 @@ namespace RaaLabs.Edge.Connectors.Terasaki
     {
         private readonly ILogger _logger;
         private readonly ConnectorConfiguration _configuration;
-
+        private readonly int _timeout;
         public event EventEmitter<Events.TcpLineReceived> TcpLineReceived;
 
         public TcpConnector(ConnectorConfiguration configuration, ILogger logger)
         {
             _logger = logger;
             _configuration = configuration;
+            _timeout = int.Parse(Environment.GetEnvironmentVariable("READ_TIMEOUT")?? "60000");
         }
 
         public async Task Run()
@@ -58,13 +59,13 @@ namespace RaaLabs.Edge.Connectors.Terasaki
 
             using (var stream = new NetworkStream(socket, FileAccess.Read, true))
             {
-                stream.ReadTimeout = 30_000;
+                stream.ReadTimeout = _timeout;
                 var reader = TerasakiStreamReader.ReadLineAsync(stream).GetAsyncEnumerator();
                 try
                 {
                     while (true)
                     {
-                        await DoWithTimeout(reader.MoveNextAsync(), 30_000);
+                        await DoWithTimeout(reader.MoveNextAsync(), _timeout);
                         var sentence = reader.Current;
                         TcpLineReceived(sentence);
                     }

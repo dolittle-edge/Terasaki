@@ -2,10 +2,9 @@
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
 using RaaLabs.Edge.Modules.Configuration;
-using RaaLabs.Edge.Connectors.Terasaki;
 using System.Diagnostics.CodeAnalysis;
 
-namespace RaaLabs.TimeSeries.Terasaki
+namespace RaaLabs.Edge.Connectors.Terasaki
 {
     /// <summary>
     /// Represents the configuration for <see cref="TcpConnector"/>

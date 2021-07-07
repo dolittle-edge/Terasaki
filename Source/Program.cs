@@ -1,14 +1,12 @@
 // Copyright (c) RaaLabs. All rights reserved.
 // Licensed under the MIT license. See LICENSE file in the project root for full license information.
 
-using RaaLabs.Edge;
 using RaaLabs.Edge.Modules.EventHandling;
 using RaaLabs.Edge.Modules.EdgeHub;
 using RaaLabs.Edge.Modules.Configuration;
-using RaaLabs.Edge.Connectors.Terasaki;
 using System.Diagnostics.CodeAnalysis;
 
-namespace RaaLabs.TimeSeries.Terasaki
+namespace RaaLabs.Edge.Connectors.Terasaki
 {
     [ExcludeFromCodeCoverage]
     static class Program
